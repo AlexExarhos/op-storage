@@ -268,7 +268,7 @@ db.list('user', db['name'] == 'Alex')
 
 ## <a name="platform-independent"></a> Platform-independent
 
-The op-storage interface is strict and limited, which means it's easy to change the backend database implementation easily. Most database frameworks are not truly platform-independent in that you may need to write slightly different code for different implementations. Platform-independence is important for a couple of reasons:
+The op-storage interface is strict and limited, which means it's easy to change the backend database implementation. Most database frameworks are not truly platform-independent in that you may need to write slightly different code for different implementations. Platform-independence is important for a couple of reasons:
 
 - To facilitate testing
 
