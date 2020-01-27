@@ -145,8 +145,8 @@ The op-storage interface automatically generates UUIDs for every object and stor
 
 ``` python
 my_uuid = db.create('user', { 'name': 'Alex', 'email': 'AlexExarhos@gmail.com', 'age': 31 })
-db.get('user', my_uuid) -> { 'name': 'Alex', 'email': 'AlexExarhos@gmail.com', 'age': 31 }
-db.list('user') -> [ (<uuid>, { 'name': 'Alex', 'email': 'AlexExarhos@gmail.com', 'age': 31 }) ]
+db.get('user', my_uuid) # -> { 'name': 'Alex', 'email': 'AlexExarhos@gmail.com', 'age': 31 }
+db.list('user') # -> [ (<uuid>, { 'name': 'Alex', 'email': 'AlexExarhos@gmail.com', 'age': 31 }) ]
 ```
 
 
@@ -274,9 +274,11 @@ db.list('user', db['name'] == 'Alex')
 The op-storage interface is strict and limited, which means it's easy to change the backend database implementation easily. Most database frameworks are not truly platform-independent in that you may need to write slightly different code for different implementations. Platform-independence is important for a couple of reasons:
 
 - To facilitate testing
+
   It is common to spin up a clean database instance for testing. Implementations like the 'in-memory' store make this effortless.
 
 - To facilitate scaling
+
   More scalable databases tend to be more expensive. Having a strict interface means that you can swap out your underlying database implementation without making any code changes.
 
 
