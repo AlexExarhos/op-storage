@@ -73,7 +73,7 @@ CREATE INDEX "user-age" ON users;
 CREATE INDEX "user-lower_email" ON users ((lower(email)));
 ```
 
-In the op-service interface, you can create complex indexes using python code:
+In the op-storage interface, you can create complex indexes using python code:
 
 ``` python
 db.init(
@@ -103,7 +103,7 @@ There are a couple of caveats here:
 
 - Your indexes must be serializable
   
-  This means that your 'key' functions must not depend on any un-scoped variables. Use of any in-scope imports is allowed, but strongly discouraged, as the version of those imports is determined outside the serialization context (i.e. by your "requirements.txt" file). The op-service interface supports serializing lambdas. As function serialization can be difficult to understand and the underlying mechanism is subject to change, we provide a function `test_index_fn` that you can apply to make sure your function behaves as expected:
+  This means that your 'key' functions must not depend on any un-scoped variables. Use of any in-scope imports is allowed, but strongly discouraged, as the version of those imports is determined outside the serialization context (i.e. by your "requirements.txt" file). The op-storage interface supports serializing lambdas. As function serialization can be difficult to understand and the underlying mechanism is subject to change, we provide a function `test_index_fn` that you can apply to make sure your function behaves as expected:
   
   ``` python
   assert op_storage.test_index_fn(lambda data: data['email'].lower())({ 'email': 'ABC' }) == 'abc'
@@ -233,10 +233,9 @@ Importantly, all these versions of code are compatible and can be run at the sam
 
 ## <a name="scaling"></a> Simplify scaling
 
-The op-service interface helps prevent scaling issues by disallowing non-indexed queries. Most databases make it possible to query data in a "slow" way (i.e. by performing a full table scan). Consider the following in SQL:
+The op-storage interface helps prevent scaling issues by disallowing non-indexed queries. Most databases make it possible to query data in a "slow" way (i.e. by performing a full table scan). Consider the following in SQL:
 
 ``` sql
-CREATE TABLE user (id serial, name text, email text, age int, PRIMARY KEY(id));
 SELECT * FROM user WHERE name = 'Alex';
 ```
 
@@ -249,9 +248,7 @@ db.createCollection('user')
 db.user.find({ 'name': 'Alex' })
 ```
 
-AWS DynamoDB does a good job of logically separating the concept of a "query" from a full table scan, so it does not have this problem. You can't write a slow query in AWS DynamoDB. The same is true for the op-service interface.
-
-In the op-storage interface, when you build conditions for your queries, you can only reference indexes that you've already created, so your queries are guaranteed to be performant. The following code will fail since 'name' is not a valid index on 'user':
+AWS DynamoDB does a good job of logically separating the concept of a "query" from a full table scan, so it does not have this problem. You can't write a slow query in AWS DynamoDB. The same is true for the op-storagee interface - when you build conditions for your queries, you can only reference indexes that you've already created, so your queries are guaranteed to be performant. The following code will fail since 'name' is not a valid index on 'user':
 
 ``` python
 db.init('user')
@@ -289,7 +286,7 @@ The op-storage interface is strict and limited, which means it's easy to change 
 
 - The op-storage interface does not necessarily minimize storage space. A tightly controlled SQL table with very specific types will take up less space.
 
-- Data is not necessarily exposed for access outside of the op-service interface. For example, we impose no format restrictions on data type names. The following code is perfectly valid:
+- Data is not necessarily exposed for access outside of the op-storage interface. For example, we impose no format restrictions on data type names. The following code is perfectly valid:
 
   ``` python
   db.init('Errors / Issues / Alarms', indexes=[ 'created_at', 'dedupe_key' ])
