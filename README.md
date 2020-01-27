@@ -239,7 +239,7 @@ The op-storage interface helps prevent scaling issues by disallowing non-indexed
 SELECT * FROM user WHERE name = 'Alex';
 ```
 
-Suppose the latter statement is wrapped up into a web API that is expected to be performant. During development and testing, that query will work, and that code may even run in production without any issue for some time. However, as we have no index on the 'name' field in the 'user' table, the execution time of that query is O(n) - proportional to the size of the 'user' table, and our web API will take so long as to effectively break when we grow to large numbers of users. This scenario is somewhat common in the real world - developers don't necessarily understand the nuances of SQL, and it's easy to miss these cases in testing as the code works for small data sets. Optimizing SQL queries / indexes can be a full-time job.
+Suppose that statement is wrapped up into a web API that is expected to be performant. During development and testing, that query will work, and that code may even run in production without any issue for some time. However, as we have no index on the 'name' field in the 'user' table, the execution time of that query is O(n) - proportional to the size of the 'user' table, and our web API will take so long as to effectively break when we grow to large numbers of users. This scenario is somewhat common in the real world - developers don't necessarily understand the nuances of SQL, and it's easy to miss these cases in testing as the code works for small data sets. Optimizing SQL queries / indexes can be a full-time job.
 
 MongoDB has a similar shortcoming - it's possible to store and query data without indexes:
 
